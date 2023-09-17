@@ -11,6 +11,8 @@ namespace TestAssessmentAPI.Mapper
         {
             CreateMap<BookResponse, Book>();
             CreateMap<BookRequest, Book>();
+            CreateMap<Book, BookResponse>();
+            CreateMap<Book, BookRequest>();
         }
     }
 }

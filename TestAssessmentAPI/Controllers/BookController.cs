@@ -15,7 +15,7 @@ namespace TestAssessmentAPI.Controllers
         }
 
         [HttpGet]
-        [Route("Books")]
+        [Route("SortedBooks")]
         public async Task<IActionResult> Books()
         {
             try
@@ -31,7 +31,7 @@ namespace TestAssessmentAPI.Controllers
         }
 
         [HttpGet]
-        [Route("BookList")]
+        [Route("SortedByAuthor")]
         public async Task<IActionResult> BookList()
         {
             try

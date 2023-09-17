@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using System.Data;
 using TestAssessmentAPI.Context;
+using TestAssessmentAPI.Model.Domain;
 using TestAssessmentAPI.Model.Response;
 
 namespace TestAssessmentAPI.Repository
@@ -8,8 +9,8 @@ namespace TestAssessmentAPI.Repository
 
     public interface IBookRepository
     {
-        public Task<List<BookResponse>> GetBooks();
-        public Task<List<BookResponse>> GetBookList();
+        public Task<List<Book>> GetBooks();
+        public Task<List<Book>> GetBookList();
         public Task<int> SaveBookList(DataTable saveDataTable);
     }
 
@@ -21,38 +22,31 @@ namespace TestAssessmentAPI.Repository
             _dapperContext = dapperContext;
         }
 
-        public async Task<List<BookResponse>> GetBooks()
+        public async Task<List<Book>> GetBooks()
         {
             using var connection = _dapperContext.CreateConnection();
-            var books = await connection.QueryAsync<BookResponse>("SP_GetBooks");
+            var books = await connection.QueryAsync<Book>("SP_GetBooks");
 
             return books.ToList();
         }
 
-        public async Task<List<BookResponse>> GetBookList()
+        public async Task<List<Book>> GetBookList()
         {
             using var connection = _dapperContext.CreateConnection();
-            var books = await connection.QueryAsync<BookResponse>("SP_GetBookList");
+            var books = await connection.QueryAsync<Book>("SP_GetBookList");
 
             return books.ToList();
         }
 
         public async Task<int> SaveBookList(DataTable saveDataTable)
         {
-            try
+            using var connection = _dapperContext.CreateConnection();
             {
-                using var connection = _dapperContext.CreateConnection();
-                {
 
-                    return await connection.ExecuteAsync("Insert_BookData", 
-                        new { BookData = saveDataTable.AsTableValuedParameter("BookType") }, 
-                            commandType: CommandType.StoredProcedure);
-                
-                }
-            }
-            catch (Exception ex)
-            {
-                throw;
+                return await connection.ExecuteAsync("Insert_BookData",
+                    new { BookData = saveDataTable.AsTableValuedParameter("BookType") },
+                        commandType: CommandType.StoredProcedure);
+
             }
         }
     }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using System.Data;
 using TestAssessmentAPI.Extensions;
+using TestAssessmentAPI.Model;
 using TestAssessmentAPI.Model.Domain;
 using TestAssessmentAPI.Model.Request;
 using TestAssessmentAPI.Model.Response;
@@ -10,8 +11,8 @@ namespace TestAssessmentAPI.Service
 {
     public interface IBookService
     {
-        public Task<List<Book>> GetBooks();
-        public Task<List<Book>> GetBookList();
+        public Task<List<BookResponse>> GetBooks();
+        public Task<List<BookResponse>> GetBookList();
         public Task<int> SaveBookList(List<BookRequest> booksList);
     }
 
@@ -24,24 +25,25 @@ namespace TestAssessmentAPI.Service
             _bookRepository = bookRepository;
             _mapper = mapper;
         }
-        public async Task<List<Book>> GetBooks()
+        public async Task<List<BookResponse>> GetBooks()
         {
-            List<BookResponse> bookResponses = await _bookRepository.GetBooks();
+            List<Book> bookResponses = await _bookRepository.GetBooks();
+            List<BookResponse> books =  _mapper.Map<List<BookResponse>>(bookResponses);
 
-            return _mapper.Map<List<Book>>(bookResponses);
+            return books;
         }
 
-        public async Task<List<Book>> GetBookList()
+        public async Task<List<BookResponse>> GetBookList()
         {
-            List<BookResponse> bookResponses = await _bookRepository.GetBookList();
+            List<Book> bookResponses = await _bookRepository.GetBookList();
+            List<BookResponse> books = _mapper.Map<List<BookResponse>>(bookResponses);
 
-            return _mapper.Map<List<Book>>(bookResponses);
+            return books;
         }
 
         public async Task<int> SaveBookList(List<BookRequest> booksList)
         {
-            List<Book> book = _mapper.Map<List<Book>>(booksList);
-            DataTable dataTable = DataTableConversion.ToDataTable(book);
+            DataTable dataTable = DataTableConversion.ToDataTable(booksList);
 
             return await _bookRepository.SaveBookList(dataTable);
         }
